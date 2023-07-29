@@ -1,0 +1,26 @@
+$white: #ffffff;
+$orange: #ff5722;
+$port-gore: #181846;
+$ebony: #0c0d25;
+$whisper: #ecedf5;
+$white-lilac: #f9f9fd;
+$lynch: #5f6b8a;
+$ghost: #c4c5d7;
+
+@font-face {
+  font-family: 'Nunito Sans Regular';
+  src: url('../../public/assets/fonts/NunitoSans_10pt-Regular.ttf');
+}
+$font-regular: 'Nunito Sans Regular';
+
+@font-face {
+  font-family: 'Nunito Sans Semibold';
+  src: url('../../public/assets/fonts/NunitoSans_10pt-Semibold.ttf');
+}
+$font-semibold: 'Nunito Sans Semibold';
+
+@font-face {
+  font-family: 'Nunito Sans Bold';
+  src: url('../../public/assets/fonts/NunitoSans_10pt-Bold.ttf');
+}
+$font-bold: 'Nunito Sans Bold';
