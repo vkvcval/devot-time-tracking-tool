@@ -7,12 +7,18 @@ import { ToastMessage } from 'primereact/toast';
 type Props = {
   activePage: PageType;
   children: ReactNode;
+  hideNavigationAndLogout?: boolean;
   showToastMessage: (message: ToastMessage) => void;
 };
-export default function Layout({ activePage, children, showToastMessage }: Props) {
+export default function Layout({ activePage, children, hideNavigationAndLogout, showToastMessage }: Props) {
   return (
     <div className={styles.layout}>
-      <Header className={styles.header} activePage={activePage} showToastMessage={showToastMessage} />
+      <Header
+        className={styles.header}
+        activePage={activePage}
+        showToastMessage={showToastMessage}
+        hideNavigationAndLogout={hideNavigationAndLogout}
+      />
       <main className={styles.main}>{children}</main>
     </div>
   );

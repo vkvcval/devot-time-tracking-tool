@@ -12,9 +12,15 @@ type Props = {
   showToastMessage: (message: ToastMessage) => void;
   activePage: PageType;
   className?: string;
+  hideNavigationAndLogout?: boolean;
 };
 
-export default function Header({ showToastMessage = () => {}, activePage, className = '' }: Props) {
+export default function Header({
+  showToastMessage = () => {},
+  activePage,
+  hideNavigationAndLogout,
+  className = '',
+}: Props) {
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -35,26 +41,28 @@ export default function Header({ showToastMessage = () => {}, activePage, classN
         <Logo className={styles.logo} />
         <p>Tracking tool</p>
       </div>
-      <div className={styles.right}>
-        <nav className={styles.navigation}>
-          <NavigationItem
-            text='Trackers'
-            path='/tracking/today'
-            iconName='TimeIcon'
-            isActive={activePage === pages.TODAY}
-          />
-          <NavigationItem
-            text='History'
-            path='/tracking/history'
-            iconName='HistoryIcon'
-            isActive={activePage === pages.HISTORY}
-          />
-        </nav>
-        <Button className={styles.logoutBtn} onClick={handleLogout}>
-          <TurnOffIcon className={styles.icon} />
-          <span>Logout</span>
-        </Button>
-      </div>
+      {!hideNavigationAndLogout && (
+        <div className={styles.right}>
+          <nav className={styles.navigation}>
+            <NavigationItem
+              text='Trackers'
+              path='/tracking/today'
+              iconName='TimeIcon'
+              isActive={activePage === pages.TODAY}
+            />
+            <NavigationItem
+              text='History'
+              path='/tracking/history'
+              iconName='HistoryIcon'
+              isActive={activePage === pages.HISTORY}
+            />
+          </nav>
+          <Button className={styles.logoutBtn} onClick={handleLogout}>
+            <TurnOffIcon className={styles.icon} />
+            <span>Logout</span>
+          </Button>
+        </div>
+      )}
     </header>
   );
 }

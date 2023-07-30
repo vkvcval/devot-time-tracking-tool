@@ -1,10 +1,7 @@
 import styles from './NavigationItem.module.scss';
-import Logo from '@assets/images/Logo.svg';
 import Link from 'next/link';
-/* import { HistoryIcon, TimeIcon } from '@/lib/icon'; */
 import { IconType } from '@/interfaces';
 import * as icons from '@lib/icon';
-/* import Button from 'primereact/button'; */
 
 type Props = {
   text: string;
@@ -12,6 +9,7 @@ type Props = {
   iconName: IconType;
   isActive?: boolean;
 };
+
 export default function NavigationItem({ text, path, iconName, isActive }: Props) {
   const Icon = icons[iconName];
 
