@@ -1,14 +1,18 @@
 @import '@styles/variables.scss';
 
 .layout {
+  height: 100vh;
+
   .header {
     position: fixed;
     width: 100%;
+    z-index: 10;
   }
 
   .main {
     padding-top: 112px;
     max-width: 1440px;
     margin: auto;
+    height: 100%;
   }
 }

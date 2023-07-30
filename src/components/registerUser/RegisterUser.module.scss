@@ -1,0 +1,33 @@
+@import '@styles/variables.scss';
+
+.wrapper {
+  border-radius: 8px;
+  border: 0.5px solid $whisper;
+  background: $white-lilac;
+  display: flex;
+  gap: 34px;
+  padding: 14px 28px 0 28px;
+  width: 100%;
+
+  .flexWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  p {
+    font-family: $font-nunito-sans-semibold;
+    color: $lynch;
+    font-size: 18px;
+    line-height: 17px;
+  }
+
+  .link {
+    color: $orange;
+    font-family: $font-nunito-sans-bold;
+    font-size: 14px;
+    line-height: 17px;
+  }
+}
