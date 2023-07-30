@@ -1,0 +1,71 @@
+@import '@styles/variables.scss';
+
+.wrapper {
+  text-decoration: none;
+  height: 100%;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    .iconAndText p {
+      color: $white-lilac;
+    }
+    .iconAndText .icon path {
+      fill: $white-lilac;
+    }
+  }
+
+  &.active {
+    p {
+      color: $white-lilac;
+    }
+
+    .icon path {
+      fill: $white-lilac;
+    }
+
+    border-bottom: 5px;
+  }
+
+  .flexWrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+  }
+
+  .iconAndText {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-grow: 1;
+    margin: 0 44px;
+
+    p {
+      font-family: $font-semibold;
+      font-size: 15px;
+      line-height: 17px;
+      color: $ghost;
+    }
+
+    .icon path {
+      fill: $ghost;
+    }
+  }
+
+  .line {
+    height: 5px;
+    width: 100%;
+    position: absolute;
+    bottom: -2.5px;
+
+    &.orange {
+      background-color: $orange;
+    }
+
+    &.grey {
+      background-color: $ghost;
+    }
+  }
+}
