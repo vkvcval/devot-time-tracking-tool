@@ -1,0 +1,14 @@
+@import '@styles/variables.scss';
+
+.layout {
+  .header {
+    position: fixed;
+    width: 100%;
+  }
+
+  .main {
+    padding-top: 112px;
+    max-width: 1440px;
+    margin: auto;
+  }
+}
