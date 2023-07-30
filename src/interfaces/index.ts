@@ -11,3 +11,14 @@ export type IconType =
   | 'TrashIcon'
   | 'TurnOffIcon'
   | 'UserIcon';
+
+export type Task = {
+  uid: string;
+  description: string;
+  startDate: string;
+  userUid: string;
+};
+
+export type ActiveTask = {
+  activeTaskUid: string;
+};
