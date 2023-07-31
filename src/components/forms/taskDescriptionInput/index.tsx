@@ -1,24 +1,26 @@
 import { InputText } from 'primereact/inputtext';
-import styles from './NewTaskForm.module.scss';
-import { useState } from 'react';
+import styles from './TaskDescriptionInput.module.scss';
+import { useState, MouseEvent } from 'react';
 import { Button } from 'primereact/button';
 
 type Props = {
-  onCreateTaskClick: (description: string) => void;
-  onCancelCreateTaskClick: () => void;
-  className?: string;
+  value: string;
   loading?: boolean;
+  className?: string;
+  onConfirm: (description: string) => void;
+  onCancel: () => void;
 };
 
-export default function NewTaskForm({ onCreateTaskClick, onCancelCreateTaskClick, className, loading }: Props) {
-  const [taskDescription, setTaskDescription] = useState<string>('');
+export default function TaskDescriptionInput({ value, loading, className, onConfirm, onCancel }: Props) {
+  const [taskDescription, setTaskDescription] = useState<string>(value);
 
-  const handleConfirm = () => {
+  const handleConfirm = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     if (!taskDescription || taskDescription.trim().length === 0) {
       return;
     }
 
-    onCreateTaskClick(taskDescription.trim());
+    onConfirm(taskDescription.trim());
   };
 
   return (
@@ -29,6 +31,7 @@ export default function NewTaskForm({ onCreateTaskClick, onCancelCreateTaskClick
           value={taskDescription}
           onChange={e => setTaskDescription(e.target.value)}
           placeholder='Enter short description'
+          autoFocus
         />
         <div className={styles.buttons}>
           <Button
@@ -47,7 +50,7 @@ export default function NewTaskForm({ onCreateTaskClick, onCancelCreateTaskClick
             aria-label='Cancel'
             tooltip='Cancel'
             tooltipOptions={{ position: 'bottom' }}
-            onClick={onCancelCreateTaskClick}
+            onClick={onCancel}
             disabled={loading}
           />
         </div>

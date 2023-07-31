@@ -1,0 +1,34 @@
+@import '@styles/variables.scss';
+
+.wrapper {
+  form {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+
+    .input {
+      flex-grow: 1;
+      font-size: 16px;
+      color: $ebony;
+
+      &:hover {
+        border-color: $orange;
+      }
+
+      &:focus {
+        border-color: $orange;
+        box-shadow: none;
+      }
+
+      &::placeholder {
+        color: $lynch;
+      }
+    }
+
+    .buttons {
+      display: flex;
+      gap: 8px;
+    }
+  }
+}

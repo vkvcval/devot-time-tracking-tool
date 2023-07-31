@@ -17,14 +17,17 @@ type TaskItem = Task & {
   isActive: boolean;
   isEdited: boolean;
   isTaskDeleteInProgress?: boolean;
+  isTaskDescriptionUpdateInProgress?: boolean;
 };
 
 type Props = {
   data?: TaskItem[];
   onClick: (action: TableAction, uid: string) => void;
+  onTaskDescriptionUpdate: (uid: string, description: string) => void;
+  onTaskDescriptionCancel: () => void;
 };
 
-export default function Table({ data, onClick }: Props) {
+export default function Table({ data, onClick, onTaskDescriptionUpdate, onTaskDescriptionCancel }: Props) {
   const actionsBodyTemplate = (data: TaskItem) => {
     return (
       <TableActions
@@ -39,14 +42,12 @@ export default function Table({ data, onClick }: Props) {
   const descriptionBodyTemplate = (data: TaskItem) => {
     if (data.isEdited) {
       return (
-        /*  <InputText
-          className={styles.input}
+        <TaskDescriptionInput
           value={data.description}
-          onChange={e => setTaskDescription(e.target.value)} 
-          onChange={e => {}}
-        /> */
-
-        <TaskDescriptionInput value={data.description} onCancel={() => {}} onConfirm={() => {}} />
+          onCancel={onTaskDescriptionCancel}
+          onConfirm={description => onTaskDescriptionUpdate(data.uid, description)}
+          loading={data.isTaskDescriptionUpdateInProgress}
+        />
       );
     }
     return data.description;

@@ -30,6 +30,7 @@ function Page({ showToastMessage }: Props) {
   const [loading, setLoading] = useState<{
     taskCreate?: boolean;
     taksDelete?: boolean;
+    taskDescriptionUpdate?: boolean;
     deletedTaskUid?: string;
     stopAll?: boolean;
   }>({});
@@ -236,6 +237,23 @@ function Page({ showToastMessage }: Props) {
       default:
     }
   };
+
+  const handleUpdateTaskDescription = async (uid: string, description: string) => {
+    if (!description || !description.trim().length) {
+      return;
+    }
+
+    setLoading({ taskDescriptionUpdate: true });
+    await updateTask(uid, { description });
+    await getTasks();
+    setTaskToEdit({});
+    setLoading({});
+  };
+
+  const handleCancelTaskDescription = () => {
+    setTaskToEdit({});
+  };
+
   return (
     <Layout activePage={pages.TODAY} showToastMessage={showToastMessage}>
       <div className={styles.wrapper}>
@@ -262,7 +280,7 @@ function Page({ showToastMessage }: Props) {
         {showNewTaskForm && (
           <NewTaskForm
             className={styles.newTaskForm}
-            isLoading={loading.taskCreate}
+            loading={loading.taskCreate}
             onCreateTaskClick={handleCreateTask}
             onCancelCreateTaskClick={() => setShowNewTaskForm(false)}
           />
@@ -276,9 +294,12 @@ function Page({ showToastMessage }: Props) {
               isEdited: taskToEdit?.uid === t.uid,
               duration: formatSecondsToHMS(loggedSeconds),
               isTaskDeleteInProgress: loading.taksDelete && t.uid === loading.deletedTaskUid,
+              isTaskDescriptionUpdateInProgress: loading.taskDescriptionUpdate && taskToEdit.uid === t.uid,
             };
           })}
           onClick={handleTaskAction}
+          onTaskDescriptionUpdate={handleUpdateTaskDescription}
+          onTaskDescriptionCancel={handleCancelTaskDescription}
         />
       </div>
     </Layout>
