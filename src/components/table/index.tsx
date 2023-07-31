@@ -1,20 +1,22 @@
 import styles from './Table.module.scss';
+import { InputText } from 'primereact/inputtext';
 import Link from 'next/link';
-import { IconType } from '@/interfaces';
+import { IconType, Task } from '@/interfaces';
 import * as icons from '@lib/icon';
 import { InputMask } from 'primereact/inputmask';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import TableActions from '../tableActions';
-import { TableAction, TimerStatus } from '@/lib/constants';
+import { TableAction } from '@/lib/constants';
 import { useState } from 'react';
 import { Nullable } from 'primereact/ts-helpers';
+import TaskDescriptionInput from '../forms/taskDescriptionInput';
 
-type TaskItem = {
-  uid: string;
-  duration: number;
-  description: string;
-  state: TimerStatus;
+type TaskItem = Task & {
+  duration: string;
+  isActive: boolean;
+  isEdited: boolean;
+  isTaskDeleteInProgress?: boolean;
 };
 
 type Props = {
@@ -24,15 +26,37 @@ type Props = {
 
 export default function Table({ data, onClick }: Props) {
   const actionsBodyTemplate = (data: TaskItem) => {
-    return <TableActions uid={data.uid} state={data.state} onClick={onClick} />;
+    return (
+      <TableActions
+        uid={data.uid}
+        isActive={data.isActive}
+        isTaskDeleteInProgress={data.isTaskDeleteInProgress}
+        onClick={onClick}
+      />
+    );
   };
 
-  const [value, setValue] = useState<Nullable<string>>('');
+  const descriptionBodyTemplate = (data: TaskItem) => {
+    if (data.isEdited) {
+      return (
+        /*  <InputText
+          className={styles.input}
+          value={data.description}
+          onChange={e => setTaskDescription(e.target.value)} 
+          onChange={e => {}}
+        /> */
+
+        <TaskDescriptionInput value={data.description} onCancel={() => {}} onConfirm={() => {}} />
+      );
+    }
+    return data.description;
+  };
+
   return (
     <div>
       <DataTable value={data}>
         <Column field='duration' header='Time logged'></Column>
-        <Column field='description' header='Description'></Column>
+        <Column field='description' header='Description' body={descriptionBodyTemplate}></Column>
         <Column field='actions' header='Actions' body={actionsBodyTemplate}></Column>
       </DataTable>
     </div>

@@ -7,18 +7,19 @@ export const pages = {
 
 export type PageType = (typeof pages)[keyof typeof pages];
 
-export const timerStatus = {
-  ACTIVE: 'ACTIVE',
-  INACTIVE: 'INACTIVE',
+export const task_status = {
+  RUNNING: 'RUNNING',
+  COMPLETED: 'COMPLETED',
 } as const;
 
-export type TimerStatus = (typeof timerStatus)[keyof typeof timerStatus];
+export type TaskStatus = (typeof task_status)[keyof typeof task_status];
 
-export const tableAction = {
-  PLAY_PAUSE: 'PLAY_PAUSE',
+export const table_action = {
+  START: 'START',
+  PAUSE: 'PAUSE',
   STOP: 'STOP',
   EDIT: 'EDIT',
   DELETE: 'DELETE',
 } as const;
 
-export type TableAction = (typeof tableAction)[keyof typeof tableAction];
+export type TableAction = (typeof table_action)[keyof typeof table_action];

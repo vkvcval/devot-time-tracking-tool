@@ -1,15 +1,16 @@
 import styles from './TableActions.module.scss';
 import ActionButton from '@components/buttons/actionButton';
-import { TableAction, TimerStatus, tableAction, timerStatus } from '@/lib/constants';
+import { TableAction, table_action } from '@/lib/constants';
 
 type Props = {
   uid: string;
-  state: TimerStatus;
+  isActive: boolean;
+  isTaskDeleteInProgress?: boolean;
   className?: string;
   onClick: (action: TableAction, uid: string) => void;
 };
 
-export default function TableActions({ uid, state, className = '', onClick }: Props) {
+export default function TableActions({ uid, isActive, isTaskDeleteInProgress, className = '', onClick }: Props) {
   const handleOnActionClick = (action: TableAction) => {
     onClick(action, uid);
   };
@@ -17,12 +18,16 @@ export default function TableActions({ uid, state, className = '', onClick }: Pr
   return (
     <div className={`${styles.wrapper} ${className}`}>
       <ActionButton
-        iconName={state === timerStatus.ACTIVE ? 'PauseIcon' : 'PlayIcon'}
-        onClick={() => handleOnActionClick(tableAction.PLAY_PAUSE)}
+        iconName={isActive ? 'PauseIcon' : 'PlayIcon'}
+        onClick={() => handleOnActionClick(isActive ? table_action.PAUSE : table_action.START)}
       />
-      <ActionButton iconName='StopIcon' onClick={() => handleOnActionClick(tableAction.STOP)} />
-      <ActionButton iconName='EditIcon' onClick={() => handleOnActionClick(tableAction.EDIT)} />
-      <ActionButton iconName='TrashIcon' onClick={() => handleOnActionClick(tableAction.DELETE)} />
+      <ActionButton iconName='StopIcon' onClick={() => handleOnActionClick(table_action.STOP)} />
+      <ActionButton iconName='EditIcon' onClick={() => handleOnActionClick(table_action.EDIT)} />
+      <ActionButton
+        iconName='TrashIcon'
+        loading={isTaskDeleteInProgress}
+        onClick={() => handleOnActionClick(table_action.DELETE)}
+      />
     </div>
   );
 }

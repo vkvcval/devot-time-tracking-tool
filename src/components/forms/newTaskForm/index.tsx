@@ -1,6 +1,5 @@
 import { InputText } from 'primereact/inputtext';
 import styles from './NewTaskForm.module.scss';
-import Link from 'next/link';
 import { useState } from 'react';
 import { Button } from 'primereact/button';
 

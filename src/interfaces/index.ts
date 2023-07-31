@@ -1,3 +1,5 @@
+import { TaskStatus } from '@/lib/constants';
+
 export type IconType =
   | 'TimeIcon'
   | 'LeftIcon'
@@ -15,10 +17,20 @@ export type IconType =
 export type Task = {
   uid: string;
   description: string;
-  startDate: string;
   userUid: string;
+  startDate: string;
+  endDate: string | null;
+  loggedSeconds: number;
+  status: TaskStatus;
 };
 
 export type ActiveTask = {
   activeTaskUid: string;
+};
+
+export type UpdateTaskData = {
+  description?: string;
+  endDate?: string | null;
+  loggedSeconds?: number;
+  status?: TaskStatus;
 };
