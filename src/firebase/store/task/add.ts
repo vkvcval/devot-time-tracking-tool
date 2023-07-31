@@ -1,11 +1,12 @@
 import firebase_app from '@/firebase/config';
+import { task_status } from '@/lib/constants';
 import { getCurrentUTCDate } from '@/lib/utils';
 import { FirebaseError } from 'firebase/app';
 import { getFirestore, collection, addDoc, doc, setDoc } from 'firebase/firestore';
 
 const db = getFirestore(firebase_app);
 
-export default async function createNewTask({ userUid, description }: { userUid: string; description: string }) {
+export async function createNewTask({ userUid, description }: { userUid: string; description: string }) {
   let result = null;
   let error = null;
 
@@ -13,6 +14,9 @@ export default async function createNewTask({ userUid, description }: { userUid:
     userUid,
     description,
     startDate: getCurrentUTCDate(),
+    endDate: null,
+    loggedSeconds: 0,
+    status: task_status.RUNNING,
   };
 
   try {

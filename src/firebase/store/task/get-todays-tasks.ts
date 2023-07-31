@@ -12,17 +12,19 @@ import {
   QuerySnapshot,
   QueryFieldFilterConstraint,
 } from 'firebase/firestore';
+import getActiveTask from './get-active-task';
 
 const db = getFirestore(firebase_app);
 
 export default async function getTodaysTasks(userUid: string, after: QueryFieldFilterConstraint) {
   let list: Task[] = [];
+  let activeTaskUid: string | null = null;
   let snapshot = null;
   let error = null;
 
   try {
     const q = [where('userUid', '==', userUid), where('startDate', '==', getCurrentUTCDate())];
-    if (after) q.push(after);
+    /*   if (after) q.push(after); */
     /*     snapshot = await getDocs(
       query(
         collection(db, 'task'),
@@ -33,6 +35,11 @@ export default async function getTodaysTasks(userUid: string, after: QueryFieldF
     ); */
     snapshot = await getDocs(query(collection(db, 'task'), ...q));
     snapshot.forEach(doc => list.push({ ...doc.data(), uid: doc.id } as Task));
+
+    const activeTask = await getActiveTask(userUid);
+    if (activeTask.result?.activeTaskUid) {
+      activeTaskUid = activeTask.result.activeTaskUid;
+    }
 
     /*     const lista2 = [];
     const another = await getDocs(
@@ -49,5 +56,5 @@ export default async function getTodaysTasks(userUid: string, after: QueryFieldF
     error = e;
   }
 
-  return { result: { list, snapshot }, error };
+  return { result: { list, snapshot, activeTaskUid }, error };
 }
