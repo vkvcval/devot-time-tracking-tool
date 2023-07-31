@@ -4,18 +4,19 @@ import { useAuthContext } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import Layout from '@/components/layout';
 import { Nullable } from 'primereact/ts-helpers';
-import { pages, timerStatus } from '@/lib/constants';
+import { TableAction, pages, table_action, task_status } from '@/lib/constants';
 import { ToastMessage } from 'primereact/toast';
 import { CalendarIcon } from '@/lib/icon';
 import ButtonWithTextAndIcon from '@/components/buttons/buttonWithTextAndIcon';
 import Table from '@/components/table';
 import NewTaskForm from '@/components/forms/newTaskForm';
-import createNewTask from '@/firebase/store/task/add';
+import { createNewTask } from '@/firebase/store/task/add';
 import getTodaysTasks from '@/firebase/store/task/get-todays-tasks';
-import { Task } from '@/interfaces';
-import getActiveTask from '@/firebase/store/task/get-active-task';
+import { Task, UpdateTaskData } from '@/interfaces';
 import { QuerySnapshot } from 'firebase/firestore';
-import { formatSecondsToHMS } from '@/lib/utils';
+import { formatSecondsToHMS, getCurrentUTCDate } from '@/lib/utils';
+import { updateTask, updateActiveTask, stopAllTasks } from '@/firebase/store/task/update';
+import { deleteTask } from '@/firebase/store/task/delete';
 
 type Props = {
   showToastMessage: (message: ToastMessage) => void;
@@ -26,39 +27,65 @@ function Page({ showToastMessage }: Props) {
   const [value, setValue] = useState<Nullable<string>>(null);
 
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);
-  const [isTaskCreationInProgress, setIsTaskCreationInProgress] = useState(false);
+  const [loading, setLoading] = useState<{
+    taskCreate?: boolean;
+    taksDelete?: boolean;
+    deletedTaskUid?: string;
+    stopAll?: boolean;
+  }>({});
 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [lastSnaphot, setLastSnapshot] = useState<any>(null);
-  const [activeTaskUid, setActiveTaskUid] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
 
-  const [time, setTime] = React.useState<number>(0);
+  const [secondsCounter, setSecondsCounter] = useState<number>(0);
+  const [nodeJsTimer, setNodeJsTimer] = useState<NodeJS.Timer | null>(null);
+
+  const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [loggedTime, setLoggedTime] = useState<number>(0);
+
+  const [taskToEdit, setTaskToEdit] = useState<{ uid?: string; description?: string }>({});
+
+  const resetTimer = (t: NodeJS.Timer) => {
+    const cleared = clearInterval(t);
+    setNodeJsTimer(null);
+    setSecondsCounter(0);
+  };
+
+  const activateTimer = () => {
+    const t = setInterval(() => {
+      setSecondsCounter(prev => prev + 1);
+    }, 1000);
+
+    setNodeJsTimer(t);
+  };
 
   useEffect(() => {
-    setInterval(() => {
-      setTime(prev => prev + 1);
-    }, 1000);
-  }, []);
+    if (activeTask && activeTask.loggedSeconds !== null) {
+      const updatedTasks = tasks.map(t =>
+        t.uid === activeTask.uid ? { ...t, loggedSeconds: activeTask.loggedSeconds + secondsCounter } : t
+      );
+      setTasks(updatedTasks);
+      setLoggedTime(activeTask.loggedSeconds + secondsCounter);
+    }
+  }, [secondsCounter]);
 
-  const getTasks = async () => {
+  const getTasks = async ({ startTimer }: { startTimer?: boolean } = {}) => {
     if (!user) return;
     const { result, error } = await getTodaysTasks(user.uid, lastSnaphot);
 
     if (result) {
-      setTasks([...tasks, ...result.list]);
+      setTasks(result.list);
       setLastSnapshot(result.snapshot?.docs.length ? result.snapshot.docs[result.snapshot.docs.length - 1] : null);
-    } else {
-      showToastMessage({ severity: 'error', summary: 'An error occurred.' });
-    }
-  };
-
-  const getActive = async () => {
-    if (!user) return;
-    const { result, error } = await getActiveTask(user.uid);
-
-    if (result) {
-      setActiveTaskUid(result.activeTaskUid);
+      if (result.activeTaskUid) {
+        const task = result.list.find(t => t.uid === result.activeTaskUid);
+        if (task) {
+          if (startTimer) {
+            activateTimer();
+          }
+          setActiveTask(task);
+        }
+      }
     } else {
       showToastMessage({ severity: 'error', summary: 'An error occurred.' });
     }
@@ -67,38 +94,155 @@ function Page({ showToastMessage }: Props) {
   useEffect(() => {
     if (user == null) router.push('/sign-in');
     getTasks();
-    getActive();
   }, [user]);
 
   const today = new Date().toLocaleDateString('HR'); // for EN use en-US
 
-  const handleStopTimer = () => {};
+  const handleStopAll = async () => {
+    if (!user) return;
+    setLoading({ stopAll: true });
+    // if there is currently active task stop it, and save its logged time
+    if (activeTask) {
+      const data: UpdateTaskData = {
+        status: task_status.COMPLETED,
+        endDate: getCurrentUTCDate(),
+        loggedSeconds: loggedTime,
+      };
+      await updateTask(activeTask.uid, data);
+
+      await updateActiveTask(user.uid, null);
+      setActiveTask(null);
+      if (nodeJsTimer) {
+        resetTimer(nodeJsTimer);
+      }
+    }
+    await stopAllTasks(user.uid);
+    setLoading({});
+  };
+
+  const handleSaveTimeOnCurrentTaskAndResetTimer = async (uid: string) => {
+    await updateTask(uid, { loggedSeconds: loggedTime });
+    setActiveTask(null);
+    if (nodeJsTimer) {
+      resetTimer(nodeJsTimer);
+    }
+  };
 
   const handleCreateTask = async (description: string) => {
     if (!user) return;
 
     try {
-      setIsTaskCreationInProgress(true);
+      // stop and store currently active task and logged time
+      if (activeTask) {
+        await handleSaveTimeOnCurrentTaskAndResetTimer(activeTask.uid);
+      }
+
+      setLoading({ taskCreate: true });
       const { result, error } = await createNewTask({ description, userUid: user.uid });
 
       if (error) {
         showToastMessage({ severity: 'error', summary: 'Something went wrong when creating task.' });
       } else {
         showToastMessage({ severity: 'success', summary: 'Task successfuly created!' });
-        setIsTaskCreationInProgress(false);
+        setLoading({});
         setShowNewTaskForm(false);
-        getTasks();
+        getTasks({ startTimer: true });
       }
     } catch (e) {}
   };
 
+  const handleStopTimerOnTask = async (uid: string) => {
+    const isCurrentlyActiveTaskStopped = activeTask && activeTask.uid === uid;
+    const data: UpdateTaskData = {
+      status: task_status.COMPLETED,
+      endDate: getCurrentUTCDate(),
+      ...(isCurrentlyActiveTaskStopped && { loggedSeconds: loggedTime }),
+    };
+    await updateTask(uid, data);
+
+    if (isCurrentlyActiveTaskStopped) {
+      if (!user) return;
+      await updateActiveTask(user.uid, null);
+      setActiveTask(null);
+      if (nodeJsTimer) {
+        resetTimer(nodeJsTimer);
+      }
+    }
+
+    getTasks();
+  };
+
+  const handleStartTimerOnTask = async (uid: string) => {
+    if (!user) return;
+
+    if (activeTask && nodeJsTimer) {
+      // stop timer on previously active task
+      resetTimer(nodeJsTimer);
+    }
+
+    const task = tasks.find(t => t.uid === uid);
+    if (task) {
+      setActiveTask(task);
+      activateTimer();
+      await updateActiveTask(user.uid, uid);
+      getTasks();
+    }
+  };
+
+  const handlePauseTimerOnTask = async (uid: string) => {
+    if (!user) return;
+
+    await handleSaveTimeOnCurrentTaskAndResetTimer(uid);
+    await updateActiveTask(user.uid, null);
+    getTasks();
+  };
+
+  const handleDeleteTask = async (uid: string) => {
+    if (!user) return;
+
+    setLoading({ taksDelete: true, deletedTaskUid: uid });
+    if (activeTask && activeTask.uid === uid) {
+      await updateActiveTask(user.uid, null);
+      setActiveTask(null);
+      if (nodeJsTimer) {
+        resetTimer(nodeJsTimer);
+      }
+    }
+
+    await deleteTask(uid);
+    setLoading({});
+    getTasks();
+  };
+
+  const handleEditTask = (uid: string) => {
+    const task = tasks.find(t => t.uid === uid);
+    if (task) {
+      setTaskToEdit(task);
+    }
+  };
+
+  const handleTaskAction = (action: TableAction, uid: string) => {
+    switch (action) {
+      case table_action.START:
+        return handleStartTimerOnTask(uid);
+      case table_action.PAUSE:
+        return handlePauseTimerOnTask(uid);
+      case table_action.STOP:
+        return handleStopTimerOnTask(uid);
+      case table_action.DELETE:
+        return handleDeleteTask(uid);
+      case table_action.EDIT:
+        return handleEditTask(uid);
+      default:
+    }
+  };
   return (
     <Layout activePage={pages.TODAY} showToastMessage={showToastMessage}>
       <div className={styles.wrapper}>
         <h1>
           <CalendarIcon />
           <span>Today ({today})</span>
-          {formatSecondsToHMS(time)}
+          {formatSecondsToHMS(secondsCounter)}
         </h1>
         <div className={styles.buttons}>
           <ButtonWithTextAndIcon
@@ -107,32 +251,36 @@ function Page({ showToastMessage }: Props) {
             bgColor='orange'
             onClick={() => setShowNewTaskForm(!showNewTaskForm)}
           />
-          <ButtonWithTextAndIcon iconName='StopIcon' text='Stop all' bgColor='portGore' onClick={handleStopTimer} />
+          <ButtonWithTextAndIcon
+            iconName='StopIcon'
+            text='Stop all'
+            bgColor='portGore'
+            loading={loading.stopAll}
+            onClick={handleStopAll}
+          />
         </div>
         {showNewTaskForm && (
           <NewTaskForm
             className={styles.newTaskForm}
-            isLoading={isTaskCreationInProgress}
+            isLoading={loading.taskCreate}
             onCreateTaskClick={handleCreateTask}
             onCancelCreateTaskClick={() => setShowNewTaskForm(false)}
           />
         )}
-
         <Table
           data={tasks.map(t => {
-            const timeLogged = formatSecondsToHMS(0);
+            const loggedSeconds = activeTask?.uid === t.uid ? loggedTime : t.loggedSeconds;
             return {
               ...t,
-              state: t.uid === activeTaskUid ? timerStatus.ACTIVE : timerStatus.INACTIVE,
-              duration: timeLogged,
+              isActive: activeTask?.uid === t.uid,
+              isEdited: taskToEdit?.uid === t.uid,
+              duration: formatSecondsToHMS(loggedSeconds),
+              isTaskDeleteInProgress: loading.taksDelete && t.uid === loading.deletedTaskUid,
             };
           })}
+          onClick={handleTaskAction}
         />
       </div>
-
-      {/*    <button>1</button>
-      <button onClick={handleNextPage}>2</button>
-      <button>3</button> */}
     </Layout>
   );
 }
