@@ -34,6 +34,10 @@
         background-color: initial;
         border: none;
       }
+
+      &:focus {
+        box-shadow: none;
+      }
     }
 
     > input {
@@ -44,9 +48,14 @@
       color: $lynch;
       padding: 13px 50px 12px 20px;
       height: 42px;
+      pointer-events: none;
 
       &:hover {
         border: none;
+      }
+
+      &:focus {
+        box-shadow: none;
       }
     }
   }

@@ -26,3 +26,7 @@ export const getToday = (locales: Intl.LocalesArgument = 'HR') => {
   // for EN use en-US
   return new Date().toLocaleDateString(locales);
 };
+
+export const convertDateStringToUnixTimestamp = (date: string | Date) => {
+  return Math.floor(new Date(date).getTime() / 1000);
+};

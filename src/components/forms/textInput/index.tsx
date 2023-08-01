@@ -13,6 +13,7 @@ type Props = {
   label?: string;
   showBorder?: boolean;
   showReset?: boolean;
+  placeholder?: string;
   onChange: (value: string) => void;
   onResetClick?: () => void;
 };
@@ -23,6 +24,7 @@ export default function TextInput({
   label,
   showBorder,
   showReset,
+  placeholder,
   onChange,
   onResetClick = () => {},
 }: Props) {
@@ -37,7 +39,7 @@ export default function TextInput({
           className={`${styles.input} ${showBorder ? '' : styles.noBorder}`}
           value={value}
           onChange={e => onChange(e.target.value)}
-          placeholder='Enter short description'
+          placeholder={placeholder}
         />
       </span>
     </div>

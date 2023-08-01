@@ -51,6 +51,10 @@
           fill: $white-lilac;
         }
       }
+
+      &:focus {
+        box-shadow: none;
+      }
     }
   }
 }

@@ -1,9 +1,5 @@
 import styles from './SearchHistory.module.scss';
-import Link from 'next/link';
-import { IconType } from '@/interfaces';
-import { CalendarIcon } from '@lib/icon';
-import { InputText } from 'primereact/inputtext';
-import { Calendar } from 'primereact/calendar';
+import { Nullable } from 'primereact/ts-helpers';
 import DatePicker from '@/components/forms/datePicker';
 import TextInput from '@/components/forms/textInput';
 
@@ -12,8 +8,8 @@ type Props = {
   searchDescriptionValue: string;
   startDate: any;
   endDate: any;
-  onStartDateChange: (value: any) => void;
-  onEndDateChange: (value: any) => void;
+  onStartDateChange: (value: Nullable<string | Date | Date[]>) => void;
+  onEndDateChange: (value: Nullable<string | Date | Date[]>) => void;
   onSearchDescriptionChange: (value: string) => void;
   onResetDescriptionFilterClick: () => void;
 };

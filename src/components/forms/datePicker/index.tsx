@@ -1,12 +1,13 @@
 import styles from './DatePicker.module.scss';
 import { CalendarIcon } from '@lib/icon';
 import { Calendar } from 'primereact/calendar';
+import { Nullable } from 'primereact/ts-helpers';
 
 type Props = {
   className?: string;
   label?: string;
   value: any;
-  onChange?: (value: any) => void;
+  onChange?: (value: Nullable<string | Date | Date[]>) => void;
 };
 
 export default function DatePicker({ className = '', label, value, onChange = () => {} }: Props) {
@@ -23,6 +24,7 @@ export default function DatePicker({ className = '', label, value, onChange = ()
         icon={<CalendarIcon />}
         value={value}
         onChange={e => onChange(e.value)}
+        selectionMode='single'
       />
     </div>
   );
