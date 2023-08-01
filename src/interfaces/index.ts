@@ -37,4 +37,20 @@ export type UpdateTaskData = {
   endDate?: string | null;
   loggedSeconds?: number;
   status?: TaskStatus;
+  timestamp?: number;
+};
+
+export type LoadingActions = {
+  taskCreate?: boolean;
+  taksDelete?: boolean;
+  taskDescriptionUpdate?: boolean;
+  deletedTaskUid?: string;
+  stopAll?: boolean;
+};
+
+export type RowOptions = {
+  canStart?: boolean;
+  canStop?: boolean;
+  canEdit?: boolean;
+  canDelete?: boolean;
 };
