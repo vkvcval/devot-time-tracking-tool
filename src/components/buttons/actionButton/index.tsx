@@ -6,14 +6,15 @@ import * as icons from '@lib/icon';
 type Props = {
   iconName: IconType;
   loading?: boolean;
+  tooltip?: string;
   onClick: () => void;
 };
 
-export default function ActionButton({ iconName, loading, onClick = () => {} }: Props) {
+export default function ActionButton({ iconName, loading, tooltip, onClick = () => {} }: Props) {
   const Icon = icons[iconName];
 
   return (
-    <Button rounded text className={styles.btn} loading={loading} loadingIcon onClick={onClick}>
+    <Button tooltip={tooltip} rounded text className={styles.btn} loading={loading} loadingIcon onClick={onClick}>
       {Icon ? <Icon className={styles.icon} /> : null}
     </Button>
   );

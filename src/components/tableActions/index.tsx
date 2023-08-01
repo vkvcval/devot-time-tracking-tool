@@ -18,12 +18,22 @@ export default function TableActions({ uid, isActive, isTaskDeleteInProgress, cl
   return (
     <div className={`${styles.wrapper} ${className}`}>
       <ActionButton
+        tooltip={isActive ? 'Pause' : 'Start'}
         iconName={isActive ? 'PauseIcon' : 'PlayIcon'}
         onClick={() => handleOnActionClick(isActive ? table_action.PAUSE : table_action.START)}
       />
-      <ActionButton iconName='StopIcon' onClick={() => handleOnActionClick(table_action.STOP)} />
-      <ActionButton iconName='EditIcon' onClick={() => handleOnActionClick(table_action.EDIT)} />
       <ActionButton
+        tooltip={'Stop and complete'}
+        iconName='StopIcon'
+        onClick={() => handleOnActionClick(table_action.STOP)}
+      />
+      <ActionButton
+        tooltip={'Edit description'}
+        iconName='EditIcon'
+        onClick={() => handleOnActionClick(table_action.EDIT)}
+      />
+      <ActionButton
+        tooltip={'Delete'}
         iconName='TrashIcon'
         loading={isTaskDeleteInProgress}
         onClick={() => handleOnActionClick(table_action.DELETE)}
