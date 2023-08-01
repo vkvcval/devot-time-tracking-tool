@@ -69,10 +69,21 @@ function Page({ showToastMessage }: Props) {
       setTasks(updatedTasks);
       setLoggedTime(activeTask.loggedSeconds + secondsCounter);
     }
+
+    if (activeTask && secondsCounter % 120 === 0) {
+      updateTask(activeTask.uid, { loggedSeconds: loggedTime });
+    }
   }, [secondsCounter]);
+
+  useEffect(() => {
+    if (activeTask && !nodeJsTimer && secondsCounter === 0) {
+      activateTimer();
+    }
+  }, [activeTask]);
 
   const getTasks = async ({ startTimer }: { startTimer?: boolean } = {}) => {
     if (!user) return;
+
     const { result, error } = await getRunningTasks(user.uid, lastSnaphot);
 
     if (result) {
@@ -120,11 +131,11 @@ function Page({ showToastMessage }: Props) {
   };
 
   const handleSaveTimeOnCurrentTaskAndResetTimer = async (uid: string) => {
-    await updateTask(uid, { loggedSeconds: loggedTime });
-    setActiveTask(null);
     if (nodeJsTimer) {
       resetTimer(nodeJsTimer);
     }
+    await updateTask(uid, { loggedSeconds: loggedTime });
+    setActiveTask(null);
   };
 
   const handleCreateTask = async (description: string) => {
