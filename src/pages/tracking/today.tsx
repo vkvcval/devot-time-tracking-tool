@@ -2,12 +2,11 @@ import styles from '@styles/pages/Today.module.scss';
 import { useAuthContext } from '@/context/AuthContext';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { TableAction, pages, table_action, task_status } from '@/lib/constants';
+import { TableAction, items_per_page, pages, table_action, task_status } from '@/lib/constants';
 import { ToastMessage } from 'primereact/toast';
 import { CalendarIcon } from '@/lib/icon';
 import { createNewTask } from '@/firebase/store/task/add';
 import { Task, UpdateTaskData } from '@/interfaces';
-import { QuerySnapshot } from 'firebase/firestore';
 import { formatSecondsToHMS, getCurrentUTCDate } from '@/lib/utils';
 import { updateTask, updateActiveTask, stopAllTasks } from '@/firebase/store/task/update';
 import { deleteTask } from '@/firebase/store/task/delete';
@@ -16,6 +15,7 @@ import Layout from '@/components/layout';
 import ButtonWithTextAndIcon from '@/components/buttons/buttonWithTextAndIcon';
 import Table from '@/components/table';
 import NewTaskForm from '@/components/forms/newTaskForm';
+import Paging from '@/components/paging';
 
 type Props = {
   showToastMessage: (message: ToastMessage) => void;
@@ -36,8 +36,10 @@ function Page({ showToastMessage }: Props) {
   }>({});
 
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [lastSnaphot, setLastSnapshot] = useState<any>(null);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [tasksOnPage, setTasksOnPage] = useState<Task[]>([]);
+
+  const [totalRunningTasksCount, setTotalRunningTasksCount] = useState(0);
+  const [startIndexOnPage, setStartIndexOnPage] = useState(0);
 
   const [secondsCounter, setSecondsCounter] = useState<number>(0);
   const [nodeJsTimer, setNodeJsTimer] = useState<NodeJS.Timer | null>(null);
@@ -84,11 +86,15 @@ function Page({ showToastMessage }: Props) {
   const getTasks = async ({ startTimer }: { startTimer?: boolean } = {}) => {
     if (!user) return;
 
-    const { result, error } = await getRunningTasks(user.uid, lastSnaphot);
+    const { result, error } = await getRunningTasks(user.uid);
 
     if (result) {
       setTasks(result.list);
-      setLastSnapshot(result.snapshot?.docs.length ? result.snapshot.docs[result.snapshot.docs.length - 1] : null);
+
+      if (!startIndexOnPage) {
+        setTasksOnPage(result.list.slice(0, items_per_page));
+      }
+
       if (result.activeTaskUid) {
         const task = result.list.find(t => t.uid === result.activeTaskUid);
         if (task) {
@@ -97,6 +103,10 @@ function Page({ showToastMessage }: Props) {
           }
           setActiveTask(task);
         }
+      }
+
+      if (result.count) {
+        setTotalRunningTasksCount(result.count);
       }
     } else {
       showToastMessage({ severity: 'error', summary: 'An error occurred.' });
@@ -263,6 +273,11 @@ function Page({ showToastMessage }: Props) {
     setTaskToEdit({});
   };
 
+  const handlePageChange = async (index: number) => {
+    setStartIndexOnPage(index);
+    setTasksOnPage(tasks.slice(index, index + items_per_page));
+  };
+
   return (
     <Layout activePage={pages.TODAY} showToastMessage={showToastMessage}>
       <div className={styles.wrapper}>
@@ -294,7 +309,8 @@ function Page({ showToastMessage }: Props) {
           />
         )}
         <Table
-          data={tasks.map(t => {
+          className={styles.table}
+          data={tasksOnPage.map(t => {
             const loggedSeconds = activeTask?.uid === t.uid ? loggedTime : t.loggedSeconds;
             return {
               ...t,
@@ -310,6 +326,7 @@ function Page({ showToastMessage }: Props) {
           onTaskDescriptionCancel={handleCancelTaskDescription}
         />
       </div>
+      <Paging totalRecords={totalRunningTasksCount} className={styles.paging} onChange={handlePageChange} />
     </Layout>
   );
 }

@@ -23,3 +23,5 @@ export const table_action = {
 } as const;
 
 export type TableAction = (typeof table_action)[keyof typeof table_action];
+
+export const items_per_page = 10;

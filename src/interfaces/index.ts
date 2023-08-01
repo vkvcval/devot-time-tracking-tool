@@ -14,14 +14,18 @@ export type IconType =
   | 'TurnOffIcon'
   | 'UserIcon';
 
-export type Task = {
-  uid: string;
+export type NewTask = {
   description: string;
   userUid: string;
   startDate: string;
   endDate: string | null;
   loggedSeconds: number;
   status: TaskStatus;
+  timestamp: number;
+};
+
+export type Task = NewTask & {
+  uid: string;
 };
 
 export type ActiveTask = {

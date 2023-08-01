@@ -1,6 +1,7 @@
 import firebase_app from '@/firebase/config';
+import { NewTask } from '@/interfaces';
 import { task_status } from '@/lib/constants';
-import { getCurrentUTCDate } from '@/lib/utils';
+import { getCurrentUTCDate, getTimestamp } from '@/lib/utils';
 import { FirebaseError } from 'firebase/app';
 import { getFirestore, collection, addDoc, doc, setDoc } from 'firebase/firestore';
 
@@ -10,13 +11,14 @@ export async function createNewTask({ userUid, description }: { userUid: string;
   let result = null;
   let error = null;
 
-  const data = {
+  const data: NewTask = {
     userUid,
     description,
     startDate: getCurrentUTCDate(),
     endDate: null,
     loggedSeconds: 0,
     status: task_status.RUNNING,
+    timestamp: getTimestamp(),
   };
 
   try {

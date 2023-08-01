@@ -10,10 +10,8 @@ import {
   query,
   where,
   getDocs,
-  startAfter,
-  limit,
-  QuerySnapshot,
   QueryFieldFilterConstraint,
+  getCountFromServer,
 } from 'firebase/firestore';
 
 const db = getFirestore(firebase_app);
@@ -35,23 +33,37 @@ export async function getActiveTask(userUid: string) {
   return { result, error };
 }
 
-export async function getRunningTasks(userUid: string, after: QueryFieldFilterConstraint) {
+export async function getRunningTasksCount(userUid: string) {
+  let error = null;
+  let result = null;
+
+  try {
+    const collection_ = collection(db, 'task');
+    const query_ = query(collection_, where('userUid', '==', userUid), where('status', '==', task_status.RUNNING));
+    const snapshot = await getCountFromServer(query_);
+
+    result = snapshot.data().count;
+  } catch (e) {
+    error = e;
+  }
+
+  return { result, error };
+}
+
+export async function getRunningTasks(
+  userUid: string,
+  options: { startAfter?: QueryFieldFilterConstraint; endBefore?: QueryFieldFilterConstraint } = {}
+) {
   let list: Task[] = [];
+  let count = 0;
   let activeTaskUid: string | null = null;
   let snapshot = null;
   let error = null;
 
   try {
     const q = [where('userUid', '==', userUid), where('status', '==', task_status.RUNNING)];
-    /*   if (after) q.push(after); */
-    /*     snapshot = await getDocs(
-      query(
-        collection(db, 'task'),
-        where('userUid', '==', userUid),
-        where('startDate', '==', getCurrentUTCDate()),
-        limit(2)
-      )
-    ); */
+    if (options.startAfter) q.push(options.startAfter);
+    if (options.endBefore) q.push(options.endBefore);
     snapshot = await getDocs(query(collection(db, 'task'), ...q));
     snapshot.forEach(doc => list.push({ ...doc.data(), uid: doc.id } as Task));
 
@@ -60,20 +72,21 @@ export async function getRunningTasks(userUid: string, after: QueryFieldFilterCo
       activeTaskUid = activeTask.result.activeTaskUid;
     }
 
-    /*     const lista2 = [];
-    const another = await getDocs(
-      query(
-        collection(db, 'task'),
-        where('userUid', '==', userUid),
-        where('startDate', '==', getCurrentUTCDate()),
-        limit(2),
-        startAfter(snapshot.docs[snapshot.docs.length - 1])
-      )
-    );
-    another.forEach(doc => lista2.push({ ...doc.data(), uid: doc.id } as Task)); */
+    const runningTasks = await getRunningTasksCount(userUid);
+    if (runningTasks.result) {
+      count = runningTasks.result;
+    }
   } catch (e) {
     error = e;
   }
 
-  return { result: { list, snapshot, activeTaskUid }, error };
+  return {
+    result: {
+      list: list.sort((a, b) => (a.uid === activeTaskUid ? -1 : a.timestamp > b.timestamp ? -1 : 0)),
+      snapshot,
+      activeTaskUid,
+      count,
+    },
+    error,
+  };
 }
