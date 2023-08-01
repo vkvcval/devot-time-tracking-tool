@@ -1,0 +1,91 @@
+@import '@styles/variables.scss';
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 62px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .loginFormWrapper {
+    padding: 44px 35px 60px 35px;
+    display: flex;
+    flex-direction: column;
+    background-color: $white-lilac;
+    border: 0.5px solid $whisper;
+    width: 400px;
+    margin-top: 154px;
+    border-radius: 8px;
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+
+      input {
+        width: 330px;
+      }
+
+      .input {
+        font-size: 18px;
+        line-height: 17px;
+        color: $ebony;
+
+        &:hover {
+          border-color: $orange;
+        }
+
+        &:focus {
+          border-color: $orange;
+          box-shadow: 0 0 0 0.2rem $orange-box-shadow;
+        }
+
+        &::placeholder {
+          color: $lynch;
+        }
+      }
+
+      .loginBtn {
+        margin-top: 20px;
+        background-color: $orange;
+        padding: 9px 10px 10px 10px;
+        border: none;
+        font-size: 14px;
+        font-family: $nunito-sans-bold;
+        line-height: 17px;
+
+        span {
+          display: inline-block;
+        }
+
+        &:focus {
+          border-color: $orange;
+          box-shadow: 0 0 0 0.2rem $orange-box-shadow;
+        }
+      }
+    }
+  }
+
+  .registerUser {
+    flex-grow: 0;
+  }
+
+  .signInOption {
+    font-family: $nunito-sans-regular;
+    text-align: center;
+
+    .link {
+      color: $orange;
+      font-family: $nunito-sans-bold;
+      font-size: 14px;
+      line-height: 17px;
+    }
+  }
+}

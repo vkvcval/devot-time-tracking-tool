@@ -1,0 +1,60 @@
+@import '@styles/variables.scss';
+
+.header {
+  background-color: $port-gore;
+  font-family: $nunito-sans-regular;
+  min-height: 112px;
+  border-radius: 0px 0px 22px 22px;
+  display: flex;
+  justify-content: space-between;
+
+  .left {
+    padding: 34px 45px;
+    display: flex;
+    gap: 9px;
+    align-items: flex-end;
+
+    p {
+      color: $white;
+      margin-bottom: 8px;
+      line-height: 17px;
+      font-size: 24px;
+      font-family: $nunito-sans-bold;
+    }
+
+    .logo {
+      flex-shrink: 0;
+    }
+  }
+
+  .right {
+    display: flex;
+
+    .navigation {
+      display: flex;
+      height: 100%;
+    }
+
+    .logoutBtn {
+      display: flex;
+      gap: 8px;
+      margin: 0 63px 0 44px;
+      background-color: transparent;
+      border: none;
+      color: $ghost;
+      font-family: $nunito-sans-semibold;
+
+      &:hover {
+        color: $white-lilac;
+
+        .icon path {
+          fill: $white-lilac;
+        }
+      }
+
+      &:focus {
+        box-shadow: none;
+      }
+    }
+  }
+}

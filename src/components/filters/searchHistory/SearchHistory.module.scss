@@ -1,0 +1,14 @@
+@import '@styles/variables.scss';
+
+.wrapper {
+  display: flex;
+  font-family: $roboto-regular;
+  background-color: $white-lilac;
+  padding: 22px 50px 26px 50px;
+  gap: 40px;
+  flex-wrap: wrap;
+
+  .flexItem {
+    flex-grow: 1;
+  }
+}
