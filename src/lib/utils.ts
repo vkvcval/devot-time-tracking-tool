@@ -17,3 +17,7 @@ export const formatSecondsToHMS = (seconds: number) => {
     result.minutes > 9 ? result.minutes : `0${result.minutes}`
   }:${result.seconds > 9 ? result.seconds : `0${result.seconds}`}`;
 };
+
+export const getTimestamp = () => {
+  return Math.round(Date.now() / 1000);
+};

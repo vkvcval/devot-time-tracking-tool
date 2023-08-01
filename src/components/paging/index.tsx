@@ -2,6 +2,7 @@ import styles from './Paging.module.scss';
 import { useState } from 'react';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import { LeftIcon, RightIcon, StepBackwardIcon, StepforwardIcon } from '@/lib/icon';
+import { items_per_page } from '@/lib/constants';
 
 type Props = {
   totalRecords: number;
@@ -26,7 +27,7 @@ export default function Paging({ totalRecords, className = '', onChange }: Props
         firstPageLinkIcon={<StepBackwardIcon />}
         lastPageLinkIcon={<StepforwardIcon />}
         first={first}
-        rows={1}
+        rows={items_per_page}
         totalRecords={totalRecords}
         onPageChange={onPageChange}
         currentPageReportTemplate='&#123;currentPage&#125;'
