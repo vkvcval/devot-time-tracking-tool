@@ -35,6 +35,7 @@ export default function NewTaskForm({ onCreateTaskClick, onCancelCreateTaskClick
           value={taskDescription}
           onChange={e => setTaskDescription(e.target.value)}
           placeholder='Enter short description'
+          autoFocus
         />
         <div className={styles.buttons}>
           <Button

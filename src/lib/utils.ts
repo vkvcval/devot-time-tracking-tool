@@ -21,3 +21,12 @@ export const formatSecondsToHMS = (seconds: number) => {
 export const getTimestamp = () => {
   return Math.round(Date.now() / 1000);
 };
+
+export const getToday = (locales: Intl.LocalesArgument = 'HR') => {
+  // for EN use en-US
+  return new Date().toLocaleDateString(locales);
+};
+
+export const convertDateStringToUnixTimestamp = (date: string | Date) => {
+  return Math.floor(new Date(date).getTime() / 1000);
+};

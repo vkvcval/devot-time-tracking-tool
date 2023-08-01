@@ -1,0 +1,33 @@
+@import '@styles/variables.scss';
+
+.wrapper {
+  display: flex;
+  font-family: $roboto-regular;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  i {
+    cursor: pointer;
+    margin-right: 12px;
+  }
+
+  .label {
+    color: $lynch;
+    font-size: 14px;
+    line-height: 17px;
+  }
+
+  .input {
+    line-height: 17px;
+    font-size: 18px;
+    font-family: $nunito-sans-regular;
+    color: $lynch;
+    padding: 13px 50px 12px 20px;
+    height: 42px;
+
+    &.noBorder {
+      border: none;
+    }
+  }
+}

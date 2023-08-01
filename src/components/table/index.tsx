@@ -1,16 +1,10 @@
 import styles from './Table.module.scss';
-import { InputText } from 'primereact/inputtext';
-import Link from 'next/link';
-import { IconType, Task } from '@/interfaces';
-import * as icons from '@lib/icon';
-import { InputMask } from 'primereact/inputmask';
+import { RowOptions, Task } from '@/interfaces';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import TableActions from '../tableActions';
 import { TableAction } from '@/lib/constants';
-import { useState } from 'react';
-import { Nullable } from 'primereact/ts-helpers';
-import TaskDescriptionInput from '../forms/taskDescriptionInput';
+import TableActions from '@components/tableActions';
+import TaskDescriptionInput from '@components/forms/taskDescriptionInput';
 
 type TaskItem = Task & {
   duration: string;
@@ -21,7 +15,9 @@ type TaskItem = Task & {
 };
 
 type Props = {
-  data?: TaskItem[];
+  data: TaskItem[];
+  rowOptions: RowOptions;
+  showHeaders?: boolean;
   className?: string;
   onClick: (action: TableAction, uid: string) => void;
   onTaskDescriptionUpdate: (uid: string, description: string) => void;
@@ -30,6 +26,8 @@ type Props = {
 
 export default function Table({
   data,
+  rowOptions,
+  showHeaders,
   className = '',
   onClick,
   onTaskDescriptionUpdate,
@@ -43,6 +41,7 @@ export default function Table({
     return (
       <TableActions
         uid={data.uid}
+        options={rowOptions}
         isActive={data.isActive}
         isTaskDeleteInProgress={data.isTaskDeleteInProgress}
         onClick={onClick}
@@ -66,7 +65,7 @@ export default function Table({
 
   return (
     <div className={`${styles.wrapper} ${className}`}>
-      <DataTable showGridlines className={styles.table} value={data}>
+      <DataTable showGridlines className={styles.table} value={data} showHeaders={showHeaders}>
         <Column field='duration' header='Time logged' body={durationBodyTemplate} style={{ width: '20%' }}></Column>
         <Column
           field='description'

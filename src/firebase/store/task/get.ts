@@ -82,9 +82,54 @@ export async function getRunningTasks(
 
   return {
     result: {
-      list: list.sort((a, b) => (a.uid === activeTaskUid ? -1 : a.timestamp > b.timestamp ? -1 : 0)),
+      list: list.sort((a, b) => (a.timestamp > b.timestamp ? -1 : 0)),
       snapshot,
       activeTaskUid,
+      count,
+    },
+    error,
+  };
+}
+
+export async function getCompletedTasksCount(userUid: string) {
+  let error = null;
+  let result = null;
+
+  try {
+    const collection_ = collection(db, 'task');
+    const query_ = query(collection_, where('userUid', '==', userUid), where('status', '==', task_status.COMPLETED));
+    const snapshot = await getCountFromServer(query_);
+
+    result = snapshot.data().count;
+  } catch (e) {
+    error = e;
+  }
+
+  return { result, error };
+}
+
+export async function getCompletedTasks(userUid: string) {
+  let list: Task[] = [];
+  let count = 0;
+  let snapshot = null;
+  let error = null;
+
+  try {
+    const q = [where('userUid', '==', userUid), where('status', '==', task_status.COMPLETED)];
+    snapshot = await getDocs(query(collection(db, 'task'), ...q));
+    snapshot.forEach(doc => list.push({ ...doc.data(), uid: doc.id } as Task));
+
+    const completedTasks = await getCompletedTasksCount(userUid);
+    if (completedTasks.result) {
+      count = completedTasks.result;
+    }
+  } catch (e) {
+    error = e;
+  }
+
+  return {
+    result: {
+      list: list.sort((a, b) => (a.timestamp > b.timestamp ? -1 : 0)),
       count,
     },
     error,

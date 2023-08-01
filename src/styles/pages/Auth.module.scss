@@ -58,7 +58,7 @@
         padding: 9px 10px 10px 10px;
         border: none;
         font-size: 14px;
-        font-family: $font-nunito-sans-bold;
+        font-family: $nunito-sans-bold;
         line-height: 17px;
 
         span {
@@ -78,12 +78,12 @@
   }
 
   .signInOption {
-    font-family: $font-nunito-sans-regular;
+    font-family: $nunito-sans-regular;
     text-align: center;
 
     .link {
       color: $orange;
-      font-family: $font-nunito-sans-bold;
+      font-family: $nunito-sans-bold;
       font-size: 14px;
       line-height: 17px;
     }

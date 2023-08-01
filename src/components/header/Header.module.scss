@@ -2,7 +2,7 @@
 
 .header {
   background-color: $port-gore;
-  font-family: $font-nunito-sans-regular;
+  font-family: $nunito-sans-regular;
   min-height: 112px;
   border-radius: 0px 0px 22px 22px;
   display: flex;
@@ -19,7 +19,7 @@
       margin-bottom: 8px;
       line-height: 17px;
       font-size: 24px;
-      font-family: $font-nunito-sans-bold;
+      font-family: $nunito-sans-bold;
     }
 
     .logo {
@@ -42,7 +42,7 @@
       background-color: transparent;
       border: none;
       color: $ghost;
-      font-family: $font-nunito-sans-semibold;
+      font-family: $nunito-sans-semibold;
 
       &:hover {
         color: $white-lilac;
@@ -50,6 +50,10 @@
         .icon path {
           fill: $white-lilac;
         }
+      }
+
+      &:focus {
+        box-shadow: none;
       }
     }
   }
