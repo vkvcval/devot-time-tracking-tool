@@ -4,7 +4,7 @@ import { task_status } from '@/lib/constants';
 import { getCurrentUTCDate } from '@/lib/utils';
 import { FirebaseError } from 'firebase/app';
 import { getFirestore, doc, setDoc, where, getDocs, query, collection } from 'firebase/firestore';
-import getActiveTask from './get-active-task';
+import { getActiveTask } from './get';
 
 const db = getFirestore(firebase_app);
 

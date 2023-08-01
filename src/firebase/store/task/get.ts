@@ -1,8 +1,11 @@
 import firebase_app from '@/firebase/config';
+import { ActiveTask } from '@/interfaces';
 import { Task } from '@/interfaces';
-import { getCurrentUTCDate } from '@/lib/utils';
+import { task_status } from '@/lib/constants';
 import {
   getFirestore,
+  doc,
+  getDoc,
   collection,
   query,
   where,
@@ -12,18 +15,34 @@ import {
   QuerySnapshot,
   QueryFieldFilterConstraint,
 } from 'firebase/firestore';
-import getActiveTask from './get-active-task';
 
 const db = getFirestore(firebase_app);
 
-export default async function getTodaysTasks(userUid: string, after: QueryFieldFilterConstraint) {
+export async function getActiveTask(userUid: string) {
+  let result: ActiveTask | null = null;
+  let error = null;
+
+  try {
+    const docRef = doc(db, 'activeTask', userUid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      result = docSnap.data() as ActiveTask;
+    }
+  } catch (e) {
+    error = e;
+  }
+
+  return { result, error };
+}
+
+export async function getRunningTasks(userUid: string, after: QueryFieldFilterConstraint) {
   let list: Task[] = [];
   let activeTaskUid: string | null = null;
   let snapshot = null;
   let error = null;
 
   try {
-    const q = [where('userUid', '==', userUid), where('startDate', '==', getCurrentUTCDate())];
+    const q = [where('userUid', '==', userUid), where('status', '==', task_status.RUNNING)];
     /*   if (after) q.push(after); */
     /*     snapshot = await getDocs(
       query(

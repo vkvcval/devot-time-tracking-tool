@@ -26,6 +26,7 @@
       "@components/*": ["./components/*"],
       "@styles/*": ["./styles/*"],
       "@interfaces/*": ["./lib/interfaces/*"],
+      "@lib/*": ["./lib/*"],
       "@assets/*": ["../public/assets/*"]
     }
   },

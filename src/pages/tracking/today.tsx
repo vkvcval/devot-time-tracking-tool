@@ -1,22 +1,21 @@
 import styles from '@styles/pages/Today.module.scss';
-import React, { useState, useEffect } from 'react';
 import { useAuthContext } from '@/context/AuthContext';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Layout from '@/components/layout';
-import { Nullable } from 'primereact/ts-helpers';
 import { TableAction, pages, table_action, task_status } from '@/lib/constants';
 import { ToastMessage } from 'primereact/toast';
 import { CalendarIcon } from '@/lib/icon';
-import ButtonWithTextAndIcon from '@/components/buttons/buttonWithTextAndIcon';
-import Table from '@/components/table';
-import NewTaskForm from '@/components/forms/newTaskForm';
 import { createNewTask } from '@/firebase/store/task/add';
-import getTodaysTasks from '@/firebase/store/task/get-todays-tasks';
 import { Task, UpdateTaskData } from '@/interfaces';
 import { QuerySnapshot } from 'firebase/firestore';
 import { formatSecondsToHMS, getCurrentUTCDate } from '@/lib/utils';
 import { updateTask, updateActiveTask, stopAllTasks } from '@/firebase/store/task/update';
 import { deleteTask } from '@/firebase/store/task/delete';
+import { getRunningTasks } from '@/firebase/store/task/get';
+import Layout from '@/components/layout';
+import ButtonWithTextAndIcon from '@/components/buttons/buttonWithTextAndIcon';
+import Table from '@/components/table';
+import NewTaskForm from '@/components/forms/newTaskForm';
 
 type Props = {
   showToastMessage: (message: ToastMessage) => void;
@@ -24,7 +23,8 @@ type Props = {
 function Page({ showToastMessage }: Props) {
   const { user } = useAuthContext();
   const router = useRouter();
-  const [value, setValue] = useState<Nullable<string>>(null);
+
+  const today = new Date().toLocaleDateString('HR'); // for EN use en-US
 
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);
   const [loading, setLoading] = useState<{
@@ -48,7 +48,7 @@ function Page({ showToastMessage }: Props) {
   const [taskToEdit, setTaskToEdit] = useState<{ uid?: string; description?: string }>({});
 
   const resetTimer = (t: NodeJS.Timer) => {
-    const cleared = clearInterval(t);
+    clearInterval(t);
     setNodeJsTimer(null);
     setSecondsCounter(0);
   };
@@ -73,7 +73,7 @@ function Page({ showToastMessage }: Props) {
 
   const getTasks = async ({ startTimer }: { startTimer?: boolean } = {}) => {
     if (!user) return;
-    const { result, error } = await getTodaysTasks(user.uid, lastSnaphot);
+    const { result, error } = await getRunningTasks(user.uid, lastSnaphot);
 
     if (result) {
       setTasks(result.list);
@@ -96,8 +96,6 @@ function Page({ showToastMessage }: Props) {
     if (user == null) router.push('/sign-in');
     getTasks();
   }, [user]);
-
-  const today = new Date().toLocaleDateString('HR'); // for EN use en-US
 
   const handleStopAll = async () => {
     if (!user) return;
@@ -260,7 +258,6 @@ function Page({ showToastMessage }: Props) {
         <h1>
           <CalendarIcon />
           <span>Today ({today})</span>
-          {formatSecondsToHMS(secondsCounter)}
         </h1>
         <div className={styles.buttons}>
           <ButtonWithTextAndIcon
