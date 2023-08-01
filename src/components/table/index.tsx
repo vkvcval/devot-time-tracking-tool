@@ -28,6 +28,10 @@ type Props = {
 };
 
 export default function Table({ data, onClick, onTaskDescriptionUpdate, onTaskDescriptionCancel }: Props) {
+  const durationBodyTemplate = (data: TaskItem) => {
+    return <span className={data.isActive ? styles.bold : ''}>{data.duration}</span>;
+  };
+
   const actionsBodyTemplate = (data: TaskItem) => {
     return (
       <TableActions
@@ -50,13 +54,13 @@ export default function Table({ data, onClick, onTaskDescriptionUpdate, onTaskDe
         />
       );
     }
-    return data.description;
+    return <span className={data.isActive ? styles.bold : ''}>{data.description}</span>;
   };
 
   return (
     <div className={styles.wrapper}>
       <DataTable showGridlines className={styles.table} value={data}>
-        <Column field='duration' header='Time logged' style={{ width: '20%' }}></Column>
+        <Column field='duration' header='Time logged' body={durationBodyTemplate} style={{ width: '20%' }}></Column>
         <Column
           field='description'
           header='Description'
