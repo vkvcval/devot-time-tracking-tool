@@ -21,3 +21,8 @@ export const formatSecondsToHMS = (seconds: number) => {
 export const getTimestamp = () => {
   return Math.round(Date.now() / 1000);
 };
+
+export const getToday = (locales: Intl.LocalesArgument = 'HR') => {
+  // for EN use en-US
+  return new Date().toLocaleDateString(locales);
+};
