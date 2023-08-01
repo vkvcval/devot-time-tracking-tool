@@ -21,16 +21,22 @@ $box-shadow-5: -4px 4px 0 0 rgba(0, 0, 0, 0.05);
   font-family: 'Nunito Sans Regular';
   src: url('../../public/assets/fonts/NunitoSans_10pt-Regular.ttf');
 }
-$font-nunito-sans-regular: 'Nunito Sans Regular';
+$nunito-sans-regular: 'Nunito Sans Regular';
 
 @font-face {
   font-family: 'Nunito Sans Semibold';
   src: url('../../public/assets/fonts/NunitoSans_10pt-Semibold.ttf');
 }
-$font-nunito-sans-semibold: 'Nunito Sans Semibold';
+$nunito-sans-semibold: 'Nunito Sans Semibold';
 
 @font-face {
   font-family: 'Nunito Sans Bold';
   src: url('../../public/assets/fonts/NunitoSans_10pt-Bold.ttf');
 }
-$font-nunito-sans-bold: 'Nunito Sans Bold';
+$nunito-sans-bold: 'Nunito Sans Bold';
+
+@font-face {
+  font-family: 'Roboto Regular';
+  src: url('../../public/assets/fonts/Roboto-Regular.ttf');
+}
+$roboto-regular: 'Roboto Regular';
