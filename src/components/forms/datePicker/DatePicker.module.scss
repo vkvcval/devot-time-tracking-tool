@@ -1,0 +1,53 @@
+@import '@styles/variables.scss';
+
+.wrapper {
+  display: flex;
+  font-family: $roboto-regular;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .label {
+    color: $lynch;
+    font-size: 14px;
+    line-height: 17px;
+  }
+
+  .calendar {
+    border: 1px solid $white;
+    transition:
+      background-color 0.2s,
+      color 0.2s,
+      border-color 0.2s,
+      box-shadow 0.2s;
+
+    &:hover {
+      border: 1px solid $ghost;
+    }
+
+    > button {
+      background-color: $white;
+      border: none;
+      padding: 8px 0;
+
+      &:hover {
+        background-color: initial;
+        border: none;
+      }
+    }
+
+    > input {
+      border: none;
+      line-height: 17px;
+      font-size: 18px;
+      font-family: $nunito-sans-regular;
+      color: $lynch;
+      padding: 13px 50px 12px 20px;
+      height: 42px;
+
+      &:hover {
+        border: none;
+      }
+    }
+  }
+}
