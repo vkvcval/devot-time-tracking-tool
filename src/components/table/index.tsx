@@ -22,12 +22,19 @@ type TaskItem = Task & {
 
 type Props = {
   data?: TaskItem[];
+  className?: string;
   onClick: (action: TableAction, uid: string) => void;
   onTaskDescriptionUpdate: (uid: string, description: string) => void;
   onTaskDescriptionCancel: () => void;
 };
 
-export default function Table({ data, onClick, onTaskDescriptionUpdate, onTaskDescriptionCancel }: Props) {
+export default function Table({
+  data,
+  className = '',
+  onClick,
+  onTaskDescriptionUpdate,
+  onTaskDescriptionCancel,
+}: Props) {
   const durationBodyTemplate = (data: TaskItem) => {
     return <span className={data.isActive ? styles.bold : ''}>{data.duration}</span>;
   };
@@ -58,7 +65,7 @@ export default function Table({ data, onClick, onTaskDescriptionUpdate, onTaskDe
   };
 
   return (
-    <div className={styles.wrapper}>
+    <div className={`${styles.wrapper} ${className}`}>
       <DataTable showGridlines className={styles.table} value={data}>
         <Column field='duration' header='Time logged' body={durationBodyTemplate} style={{ width: '20%' }}></Column>
         <Column

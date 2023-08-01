@@ -16,6 +16,7 @@ import Layout from '@/components/layout';
 import ButtonWithTextAndIcon from '@/components/buttons/buttonWithTextAndIcon';
 import Table from '@/components/table';
 import NewTaskForm from '@/components/forms/newTaskForm';
+import Paging from '@/components/paging';
 
 type Props = {
   showToastMessage: (message: ToastMessage) => void;
@@ -294,6 +295,7 @@ function Page({ showToastMessage }: Props) {
           />
         )}
         <Table
+          className={styles.table}
           data={tasks.map(t => {
             const loggedSeconds = activeTask?.uid === t.uid ? loggedTime : t.loggedSeconds;
             return {
@@ -310,6 +312,7 @@ function Page({ showToastMessage }: Props) {
           onTaskDescriptionCancel={handleCancelTaskDescription}
         />
       </div>
+      <Paging totalRecords={50} className={styles.paging} onChange={() => {}} />
     </Layout>
   );
 }

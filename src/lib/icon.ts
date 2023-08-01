@@ -1,5 +1,8 @@
 import TimeIcon from '@assets/icons/noun_Time_1856586 1.svg';
 import LeftIcon from '@assets/icons/item-caretleft.svg';
+import RightIcon from '@assets/icons/item-caretright.svg';
+import StepBackwardIcon from '@assets/icons/item-stepbackward.svg';
+import StepforwardIcon from '@assets/icons/item-stepforward.svg';
 import CalendarIcon from '@assets/icons/noun_daily calendar_4064786 1.svg';
 import EditIcon from '@assets/icons/noun_edit_1856545 1.svg';
 import HistoryIcon from '@assets/icons/noun_History_3323426 1.svg';
@@ -14,6 +17,9 @@ import UserIcon from '@assets/icons/noun_User_1485280 1.svg';
 export {
   TimeIcon,
   LeftIcon,
+  RightIcon,
+  StepBackwardIcon,
+  StepforwardIcon,
   CalendarIcon,
   EditIcon,
   HistoryIcon,
