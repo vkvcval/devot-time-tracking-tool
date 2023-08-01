@@ -186,18 +186,12 @@ export default function Today({ showToastMessage }: Props) {
 
   const handleStartTimerOnTask = async (uid: string) => {
     if (!user) return;
-
-    if (activeTask && nodeJsTimer) {
-      // stop timer on previously active task
-      resetTimer(nodeJsTimer);
-    }
-
     const task = tasks.find(t => t.uid === uid);
     if (task) {
       setActiveTask(task);
       activateTimer();
       await updateActiveTask(user.uid, uid);
-      getTasks();
+      await getTasks();
     }
   };
 
@@ -206,7 +200,7 @@ export default function Today({ showToastMessage }: Props) {
 
     await handleSaveTimeOnCurrentTaskAndResetTimer(uid);
     await updateActiveTask(user.uid, null);
-    getTasks();
+    await getTasks();
   };
 
   const handleDeleteTask = async (uid: string) => {
@@ -233,9 +227,12 @@ export default function Today({ showToastMessage }: Props) {
     }
   };
 
-  const handleTaskAction = (action: TableAction, uid: string) => {
+  const handleTaskAction = async (action: TableAction, uid: string) => {
     switch (action) {
       case table_action.START:
+        if (activeTask) {
+          await handlePauseTimerOnTask(activeTask.uid);
+        }
         return handleStartTimerOnTask(uid);
       case table_action.PAUSE:
         return handlePauseTimerOnTask(uid);
@@ -300,23 +297,49 @@ export default function Today({ showToastMessage }: Props) {
             onCancelCreateTaskClick={() => setShowNewTaskForm(false)}
           />
         )}
-        <Table
-          className={styles.table}
-          rowOptions={{ canStart: true, canStop: true, canDelete: true, canEdit: true }}
-          data={tasksOnPage.map(t => {
-            return {
-              ...t,
-              isActive: activeTask?.uid === t.uid,
-              isEdited: taskToEdit?.uid === t.uid,
-              duration: formatSecondsToHMS(t.loggedSeconds),
-              isTaskDeleteInProgress: loading.taksDelete && t.uid === loading.deletedTaskUid,
-              isTaskDescriptionUpdateInProgress: loading.taskDescriptionUpdate && taskToEdit.uid === t.uid,
-            };
-          })}
-          onClick={handleTaskAction}
-          onTaskDescriptionUpdate={handleUpdateTaskDescription}
-          onTaskDescriptionCancel={handleCancelTaskDescription}
-        />
+        <div className={styles.tableWrapper}>
+          {activeTask && (
+            <Table
+              className={styles.table}
+              rowOptions={{ canStart: true, canStop: true, canDelete: true, canEdit: true }}
+              data={tasks
+                .filter(t => t.uid === activeTask.uid)
+                .map(t => {
+                  return {
+                    ...t,
+                    isActive: true,
+                    isEdited: taskToEdit?.uid === t.uid,
+                    duration: formatSecondsToHMS(t.loggedSeconds),
+                    isTaskDeleteInProgress: loading.taksDelete && t.uid === loading.deletedTaskUid,
+                    isTaskDescriptionUpdateInProgress: loading.taskDescriptionUpdate && taskToEdit.uid === t.uid,
+                  };
+                })}
+              onClick={handleTaskAction}
+              onTaskDescriptionUpdate={handleUpdateTaskDescription}
+              onTaskDescriptionCancel={handleCancelTaskDescription}
+            />
+          )}
+          <Table
+            className={styles.table}
+            showHeaders={!activeTask}
+            rowOptions={{ canStart: true, canStop: true, canDelete: true, canEdit: true }}
+            data={tasksOnPage
+              .filter(t => t.uid !== activeTask?.uid)
+              .map(t => {
+                return {
+                  ...t,
+                  isActive: false,
+                  isEdited: taskToEdit?.uid === t.uid,
+                  duration: formatSecondsToHMS(t.loggedSeconds),
+                  isTaskDeleteInProgress: loading.taksDelete && t.uid === loading.deletedTaskUid,
+                  isTaskDescriptionUpdateInProgress: loading.taskDescriptionUpdate && taskToEdit.uid === t.uid,
+                };
+              })}
+            onClick={handleTaskAction}
+            onTaskDescriptionUpdate={handleUpdateTaskDescription}
+            onTaskDescriptionCancel={handleCancelTaskDescription}
+          />
+        </div>
         <Paging totalRecords={totalRunningTasksCount} className={styles.paging} onChange={handlePageChange} />
       </div>
     </Layout>

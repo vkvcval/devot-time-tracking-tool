@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { TableAction, items_per_page, pages, table_action } from '@/lib/constants';
 import { ToastMessage } from 'primereact/toast';
 import { CalendarIcon } from '@/lib/icon';
-import { convertDateStringToUnixTimestamp, formatSecondsToHMS, getToday } from '@/lib/utils';
+import { convertDateStringToUnixTimestamp, formatSecondsToHMS } from '@/lib/utils';
 import { LoadingActions, Task } from '@/interfaces';
 import { updateTask } from '@/firebase/store/task/update';
 import { getCompletedTasks } from '@/firebase/store/task/get';
@@ -23,7 +23,6 @@ type Props = {
 export default function History({ showToastMessage }: Props) {
   const { user } = useAuthContext();
   const router = useRouter();
-  const today = getToday();
 
   const [loading, setLoading] = useState<LoadingActions>({});
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -153,7 +152,7 @@ export default function History({ showToastMessage }: Props) {
       <div className={styles.wrapper}>
         <h1>
           <CalendarIcon />
-          <span>Trackers History ({today})</span>
+          <span>Trackers History</span>
         </h1>
         <SearchHistory
           className={styles.filters}

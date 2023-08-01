@@ -15,8 +15,9 @@ type TaskItem = Task & {
 };
 
 type Props = {
-  data?: TaskItem[];
+  data: TaskItem[];
   rowOptions: RowOptions;
+  showHeaders?: boolean;
   className?: string;
   onClick: (action: TableAction, uid: string) => void;
   onTaskDescriptionUpdate: (uid: string, description: string) => void;
@@ -26,6 +27,7 @@ type Props = {
 export default function Table({
   data,
   rowOptions,
+  showHeaders,
   className = '',
   onClick,
   onTaskDescriptionUpdate,
@@ -63,7 +65,7 @@ export default function Table({
 
   return (
     <div className={`${styles.wrapper} ${className}`}>
-      <DataTable showGridlines className={styles.table} value={data}>
+      <DataTable showGridlines className={styles.table} value={data} showHeaders={showHeaders}>
         <Column field='duration' header='Time logged' body={durationBodyTemplate} style={{ width: '20%' }}></Column>
         <Column
           field='description'

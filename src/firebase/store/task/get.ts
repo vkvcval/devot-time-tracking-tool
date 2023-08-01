@@ -82,7 +82,7 @@ export async function getRunningTasks(
 
   return {
     result: {
-      list: list.sort((a, b) => (a.uid === activeTaskUid ? -1 : a.timestamp > b.timestamp ? -1 : 0)),
+      list: list.sort((a, b) => (a.timestamp > b.timestamp ? -1 : 0)),
       snapshot,
       activeTaskUid,
       count,
