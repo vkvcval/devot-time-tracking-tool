@@ -1,0 +1,41 @@
+@import '@styles/variables.scss';
+
+.wrapper {
+  background-color: #f8e4de;
+  border: 1px solid #f8d7cf;
+  padding: 16px 24px 20px 24px;
+  border-radius: 4px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+
+  form {
+    display: flex;
+    justify-content: space-between;
+    gap: 36px;
+    align-items: center;
+
+    .input {
+      flex-grow: 1;
+      font-size: 18px;
+      line-height: 17px;
+      color: $ebony;
+
+      &:hover {
+        border-color: $orange;
+      }
+
+      &:focus {
+        border-color: $orange;
+        box-shadow: none;
+      }
+
+      &::placeholder {
+        color: $lynch;
+      }
+    }
+
+    .buttons {
+      display: flex;
+      gap: 16px;
+    }
+  }
+}

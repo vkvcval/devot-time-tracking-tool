@@ -1,0 +1,39 @@
+@import '@styles/variables.scss';
+
+.btn {
+  display: flex;
+  gap: 9px;
+  border-radius: 3px;
+  padding: 6px 20px 6px 10px;
+  border: none;
+
+  span {
+    font-family: $font-nunito-sans-bold;
+    font-size: 14px;
+    line-height: 17px;
+  }
+
+  &.orange {
+    background-color: $orange;
+  }
+
+  &.portGore {
+    background-color: $port-gore;
+  }
+
+  &.orange:hover {
+    background-color: $orange-hover;
+  }
+
+  &.orange:focus {
+    box-shadow: 0 0 0 0.2rem $orange-box-shadow;
+  }
+
+  &.portGore:hover {
+    background-color: $port-gore-hover;
+  }
+
+  &.portGore:focus {
+    box-shadow: 0 0 0 0.2rem $port-gore-box-shadow;
+  }
+}

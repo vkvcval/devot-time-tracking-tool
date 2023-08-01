@@ -1,6 +1,7 @@
 import '@styles/globals.scss';
-import 'primereact/resources/themes/saga-blue/theme.css';
+import 'primereact/resources/themes/lara-light-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
 
 import type { AppProps } from 'next/app';
 import { useRef } from 'react';

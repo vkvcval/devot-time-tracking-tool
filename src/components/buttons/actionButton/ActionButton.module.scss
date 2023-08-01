@@ -1,0 +1,12 @@
+@import '@styles/variables.scss';
+
+.btn {
+  padding: 7.5px;
+  &:focus {
+    box-shadow: none;
+  }
+
+  &:active {
+    background: $orange-box-shadow !important;
+  }
+}

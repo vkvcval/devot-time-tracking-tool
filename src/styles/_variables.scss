@@ -1,12 +1,21 @@
 $white: #ffffff;
 $orange: #ff5722;
-$orange-box-shadow: #ff56226c;
 $port-gore: #181846;
 $ebony: #0c0d25;
 $whisper: #ecedf5;
 $white-lilac: #f9f9fd;
 $lynch: #5f6b8a;
 $ghost: #c4c5d7;
+
+$orange-box-shadow: #ff56226c;
+$orange-hover: #ff683a;
+$port-gore-box-shadow: rgba(42, 42, 75, 0.637);
+$port-gore-hover: #2a2a4b;
+
+$box-shadow: 0px 1px 6px 8px rgba(0, 0, 0, 0.05);
+$box-shadow-3: 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+$box-shadow-4: -5px 0 4px 0 rgba(0, 0, 0, 0.05);
+$box-shadow-5: -4px 4px 0 0 rgba(0, 0, 0, 0.05);
 
 @font-face {
   font-family: 'Nunito Sans Regular';
