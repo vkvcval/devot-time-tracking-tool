@@ -54,11 +54,16 @@ export default function Table({ data, onClick, onTaskDescriptionUpdate, onTaskDe
   };
 
   return (
-    <div>
-      <DataTable value={data}>
-        <Column field='duration' header='Time logged'></Column>
-        <Column field='description' header='Description' body={descriptionBodyTemplate}></Column>
-        <Column field='actions' header='Actions' body={actionsBodyTemplate}></Column>
+    <div className={styles.wrapper}>
+      <DataTable showGridlines className={styles.table} value={data}>
+        <Column field='duration' header='Time logged' style={{ width: '20%' }}></Column>
+        <Column
+          field='description'
+          header='Description'
+          body={descriptionBodyTemplate}
+          style={{ width: '60%' }}
+        ></Column>
+        <Column field='actions' header='Actions' body={actionsBodyTemplate} style={{ width: '20%' }}></Column>
       </DataTable>
     </div>
   );
